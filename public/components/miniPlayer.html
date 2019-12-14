@@ -1,0 +1,20 @@
+
+<div class="mini-player">
+    <div class="controls-wrapper">
+        <div class="back-button" id="back-button" onclick="prevAction()">
+            <i class="fas fa-backward"></i>
+        </div>
+        <div class="play-button" id="play-button" onclick="playAction()">
+            <i class="fas fa-play"></i>
+        </div>
+        <div class="forward-button" id="forward-button" onclick="nextAction()">
+            <i class="fas fa-forward"></i>
+        </div>
+    </div>
+    <div class="volume-slider-container">
+        <input type="range" min="0"  value="75" max="100" class="slider" id="volume-slider" onchange="updateSongVolume(this.value)">
+    </div>
+    <div class="audio-slider-container">
+        <input type="range" min="1"  value="0" class="slider" id="audio-slider" onchange="updateSongTime(this.value)">
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<!--partial html file to be appended to main content view -->
+
+<h1 class="title-h1">Add New Song</h1>
+
+<div class="upload-file-container">
+    <div class="file-wrapper" id="file-wrapper">
+
+    </div>
+    <div class="upload-file-controls">
+        <form enctype="multipart/form-data" action="/upload/audio" method="post">
+            <label for="upload-songs-button" class="select-files-button">Select Songs</label>
+            <input id="upload-songs-button" name="songs" type="file" multiple style="position: fixed; top: -100em">
+            <input class="upload-files-button" type="submit">
+        </form>
+    </div> 
+</div>
+
+
+
