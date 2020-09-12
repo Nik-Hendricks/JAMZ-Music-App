@@ -4,20 +4,24 @@ const cookieParser = require("cookie-parser");
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-var port = 3000;
+var port = 80;
 var Nedb = require('nedb');
 var uniqid = require('uniqid')
 var multer  =   require('multer');
 var upload = multer()
 var mp3Duration = require('mp3-duration');
-
+var mm = require('music-metadata');
+var util = require('util')
 //configure db
-users = new Nedb({ filename: 'db/users.db', autoload: true, timestampData: true });
-usersSongs = new Nedb({filename: 'db/usersSongs.db', autoload:true, timestampData:true});
-songIndex = new Nedb({ filename: 'db/songIndex.db', autoload: true , timestampData: true});
-songData = new Nedb({ filename: 'db/songData.db', autoload: true , timestampData: true});
-playlistsIndex = new Nedb({ filename: 'db/playlistsIndex.db', autoload: true , timestampData: true});
-playlistsSongs = new Nedb({ filename: 'db/playlistsSongs.db', autoload: true , timestampData: true});
+users =           new Nedb({ filename: 'db/users.db', autoload: true, timestampData: true });
+usersSongs =      new Nedb({filename: 'db/usersSongs.db', autoload:true, timestampData: true});
+songIndex =       new Nedb({ filename: 'db/songIndex.db', autoload: true , timestampData: true});
+songData =        new Nedb({ filename: 'db/songData.db', autoload: true , timestampData: true});
+playlistsIndex =  new Nedb({ filename: 'db/playlistsIndex.db', autoload: true , timestampData: true});
+playlistsSongs =  new Nedb({ filename: 'db/playlistsSongs.db', autoload: true , timestampData: true}); //store image, user can upload image upon creation or have a generated one
+artists =         new Nedb({ filename: 'db/artists.db', autoload: true, timestampdata: true}) //Stores albumIds, name, and if the artist has an account the user id
+albums =          new Nedb({ filename: 'db/albums.db', autoload: true, timestampdata: true}) //stores album image, or not, songDataIds, album description
+genre =           new Nedb({ filename: 'db/genres.db', autoload: true, timestampdata: true}) //stores name, genreId, and(maybe songId's of the top 10 listened songs of that genre updated every 24 hours)
 
 
 app.use(cookieParser());
@@ -35,18 +39,66 @@ app.post('/upload/audio',upload.array('songs', 50), (req, res, next) => {
     console.log(req.cookies.uid)
     var uid = req.cookies.uid;
     var files = req.files
+
+
     if (!files) {
         const error = new Error('Please choose files')
         error.httpStatusCode = 400
         return next(error)
     }
         files.forEach(file => {
-          var songUid = uniqid();
-          console.log('file.originalname= ' + file.originalname)
-          base64data = new Buffer(file.buffer).toString('base64');
-          songData.insert({songId:songUid ,filename: file.originalname, base64: base64data}, function (err) {});
-          songIndex.insert({songName: file.originalname, songId:songUid},function(err){});
-          usersSongs.insert({userUid: uid, listenAmmount: null, favorite: false, songId:songUid},function(err){});
+
+
+          mm.parseBuffer(file.buffer, 'audio/mpeg').then( metadata => {
+            console.log(metadata.common)
+            albumUid = null;
+            //check for picture in metadata
+            if(metadata.common.picture){
+
+              songImage = new Buffer(metadata.common.picture[0].data).toString('base64');
+            }else{
+              songImage = null;
+            }
+
+            //check for title in metadata
+            if(metadata.common.title){
+              songName = metadata.common.title;
+            }else{
+              songName = file.originalname;
+            }
+
+            //check for albumName in metadata
+            //console.log(metadata.common.album)
+            if(metadata.common.album){
+              console.log("THEER IS ALBUM")
+              albumName = metadata.common.album;
+              checkAlbumExists(albumName).then(result => {
+                console.log("albumResult " + result)
+                if(result == false){
+                  console.log("ALBUM DOES NOT EXIST")
+                  albumUid = uniqid();
+                  albums.insert({albumUid:albumUid, albumName:albumName, albumImage:songImage})
+                }else{
+                  console.log("ALBUM EXISTS HERES THE UID " + result)
+                  albumUid = result;
+                }
+              })
+            }else{
+              //albumUid = null;
+            }
+
+
+            var songUid = uniqid();
+            //console.log('file.originalname= ' + file.originalname)
+            base64data = new Buffer(file.buffer).toString('base64');
+            songData.insert({songId:songUid, filename: file.originalname, base64: base64data}, function (err) {});
+            songIndex.insert({songName: songName, songId:songUid, songAlbum:albumUid},function(err){});
+            usersSongs.insert({userUid: uid, listenAmmount: null, favorite: false, songId:songUid},function(err){});
+
+          });
+
+
+
         });
         res.redirect('/')
 
@@ -133,6 +185,18 @@ app.get("/js/:file",function(req, res){
     }); 
   });
 
+  app.get("/album_art/:albumUid", (req, res) => {
+    var albumUid = req.param('albumUid');
+    albums.findOne({albumUid:albumUid}, (err, doc) => {
+      var albumImage = new Buffer(doc.albumImage, 'base64');
+      res.header({
+        'Content-Type': 'image/png',
+        'Content-Length': albumImage.length
+      });
+      res.end(albumImage)
+    })
+  })
+
 
 //start handling websocket connections
 io.on('connection', function(socket){
@@ -150,13 +214,10 @@ io.on('connection', function(socket){
         var usersSongs = [];
         var i = 0;
         getUserSongs(uid).then(results => {
-            console.log(results.length)
             results.forEach(song =>{
                 i++
                 getSongInfo(song.songId).then(result =>{
                     usersSongs.push(result);
-                    console.log('usersSongs')
-                    console.log(usersSongs)
                     if(usersSongs.length == results.length){
                         callback(usersSongs)
                     }
@@ -173,7 +234,7 @@ io.on('connection', function(socket){
 });
 
 
-//addUser("Sonja", "password")
+//addUser("Nik", "Nik")
 
 function addUser(username, password){
     users.insert({uid:uniqid(), username:username, password: password}, function(err){});
@@ -199,7 +260,6 @@ function tryLogin(username, password){
 function getUserSongs(uid){
     return new Promise(resolve => {
         usersSongs.find({userUid: uid}, (err, rows) => {
-            console.log(rows)
             resolve(rows)
         })
     })
@@ -208,10 +268,22 @@ function getUserSongs(uid){
 function getSongInfo(songId){
     return new Promise(resolve =>{
         songIndex.findOne({songId:songId}, (err, row) => {
-            console.log(row)
             resolve(row)
         })
     })
+}
+
+
+function checkAlbumExists(albumName){
+  return new Promise(resolve => {
+    albums.findOne({albumName:albumName}, (err, row) => {
+        if(row){
+          resolve(row.albumUid)
+        }else{
+          resolve(false)
+        }
+    })
+  })
 }
 
 //get filesize in bytes to make sure express knows how big the file 

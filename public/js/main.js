@@ -134,7 +134,7 @@ function appendSongs(){
             var dateAddedCell = row.insertCell(2);
             var actionCell = row.insertCell(3)
             songCell.innerHTML = `<a onclick="openSong('${song.songId}')">${song.songName}</a>`;
-            artistCell.innerHTML = song.artist
+            artistCell.innerHTML = song.songrtist
             dateAddedCell.innerHTML = song.createdAt
             actionCell.innerHTML = '<i class="fas fa-ellipsis-v"></i>'
             i++
