@@ -172,7 +172,7 @@ io.on('connection', function(socket){
 });
 
 
-//addUser("Sonja", "password")
+addUser("Crimson", "password")
 
 function addUser(username, password){
     users.insert({uid:uniqid(), username:username, password: password}, function(err){});
