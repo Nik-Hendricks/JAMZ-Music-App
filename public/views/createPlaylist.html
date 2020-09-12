@@ -1,0 +1,27 @@
+<!--partial html file to be appended to main content view -->
+
+<h1 class="title-h1">Create Playlist</h1>
+
+<div class="create-playlist-container">
+
+    <div class="create-playlist-card">
+        <form enctype="multipart/form-data" action="/create/playlist" method="post">
+        </form>
+    </div>
+
+        <h3>Your Songs</h3>
+        <div class="table-wrapper">
+            <table class="songs-table" id="songs-table">
+                <tr>
+                    <th>Song</th>
+                    <th>Artist</th>
+                    <th>Date Added</th>
+                    <th></th>
+                </tr>
+            </table>
+        </div>
+        <div class="bottom-bar">
+            <label for="create-playlist-button" class="select-files-button">Create Playlist</label>
+            <input class="create-playlist-button" type="submit">
+        </div>
+</div>

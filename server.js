@@ -4,12 +4,13 @@ const cookieParser = require("cookie-parser");
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-var port = 3000;
+var port = 80;
 var Nedb = require('nedb');
 var uniqid = require('uniqid')
 var multer  =   require('multer');
 var upload = multer()
 var mp3Duration = require('mp3-duration');
+const { generateKeyPairSync } = require('crypto');
 
 //configure db
 users = new Nedb({ filename: 'db/users.db', autoload: true, timestampData: true });
@@ -18,7 +19,6 @@ songIndex = new Nedb({ filename: 'db/songIndex.db', autoload: true , timestampDa
 songData = new Nedb({ filename: 'db/songData.db', autoload: true , timestampData: true});
 playlistsIndex = new Nedb({ filename: 'db/playlistsIndex.db', autoload: true , timestampData: true});
 playlistsSongs = new Nedb({ filename: 'db/playlistsSongs.db', autoload: true , timestampData: true});
-
 
 app.use(cookieParser());
 
@@ -49,7 +49,6 @@ app.post('/upload/audio',upload.array('songs', 50), (req, res, next) => {
           usersSongs.insert({userUid: uid, listenAmmount: null, favorite: false, songId:songUid},function(err){});
         });
         res.redirect('/')
-
 })
 
 app.get("/view/:file",function(req, res){
@@ -133,6 +132,13 @@ app.get("/js/:file",function(req, res){
     }); 
   });
 
+  app.get('/artist/:artistId', function(req, res) {
+
+  });
+
+  app.get('/album/:albumId', function(req, res) {
+
+  });
 
 //start handling websocket connections
 io.on('connection', function(socket){
@@ -171,9 +177,6 @@ io.on('connection', function(socket){
       })
     })
 });
-
-
-//addUser("Sonja", "password")
 
 function addUser(username, password){
     users.insert({uid:uniqid(), username:username, password: password}, function(err){});
