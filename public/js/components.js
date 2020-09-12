@@ -24,6 +24,15 @@ class miniPlayer extends HTMLElement{
     }
 }
 
+class songTable extends HTMLElement {
+    constructor() {
+        super();
+        getHTML('songTable.html').then(html=>{
+            this.innerHTML = html
+        })
+    }
+}
+
 
 function getHTML(file){
     return new Promise(resolve =>{
@@ -36,3 +45,4 @@ function getHTML(file){
 
 
 window.customElements.define('mini-player', miniPlayer);
+window.customElements.define('song-table', songTable);
