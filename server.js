@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-var port = 3000;
+var port = 80;
 var Nedb = require('nedb');
 var uniqid = require('uniqid')
 var multer  =   require('multer');
@@ -18,7 +18,6 @@ songIndex = new Nedb({ filename: 'db/songIndex.db', autoload: true , timestampDa
 songData = new Nedb({ filename: 'db/songData.db', autoload: true , timestampData: true});
 playlistsIndex = new Nedb({ filename: 'db/playlistsIndex.db', autoload: true , timestampData: true});
 playlistsSongs = new Nedb({ filename: 'db/playlistsSongs.db', autoload: true , timestampData: true});
-
 
 app.use(cookieParser());
 
