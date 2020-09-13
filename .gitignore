@@ -1,7 +1,7 @@
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
-# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,database,audio,node
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,database,audio,node
+# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,node,database,audio,linux
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,node,database,audio,linux
 
 ### Audio ###
 *.aif
@@ -18,13 +18,27 @@
 *.flac
 
 ### Database ###
-/db
 *.accdb
 *.db
 *.dbf
 *.mdb
 *.pdb
 *.sqlite3
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
 
 ### Node ###
 # Logs
@@ -173,8 +187,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-pissfuck.*
-
-# End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,database,audio,node
+# End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,node,database,audio,linux
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
+pissfuck.*
+db/
