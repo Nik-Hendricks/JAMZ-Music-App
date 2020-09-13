@@ -47,8 +47,7 @@ app.post('/upload/audio',upload.array('songs', 50), (req, res, next) => {
           songIndex.insert({songName: file.originalname, songId:songUid},function(err){});
           usersSongs.insert({userUid: uid, listenAmmount: null, favorite: false, songId:songUid},function(err){});
         });
-        res.redirect('/')
-
+    res.redirect('/')
 })
 
 app.get("/view/:file",function(req, res){
@@ -170,9 +169,6 @@ io.on('connection', function(socket){
       })
     })
 });
-
-
-addUser("Crimson", "password")
 
 function addUser(username, password){
     users.insert({uid:uniqid(), username:username, password: password}, function(err){});

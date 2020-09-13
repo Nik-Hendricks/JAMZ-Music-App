@@ -29,6 +29,8 @@ class songTable extends HTMLElement {
         super();
         getHTML('songTable.html').then(html=>{
             this.innerHTML = html
+        }).then((value) => {
+            appendSongs(this, this.getAttribute('content'))
         })
     }
 }
