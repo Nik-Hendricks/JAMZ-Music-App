@@ -125,7 +125,7 @@ function appendSongs(){
     var uid = getCookie('uid')
         songsResults.forEach(song => {
             
-            var table = document.getElementById('songs-table')
+            var table = document.getElementById('song-table')
             var row = table.insertRow(-1);
             row.className = 'song-item';
             row.id = 'song-item-' + i;
