@@ -174,9 +174,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # Nik likes to make files like this idk why
-pissfuck.js
-pissfuck.html
-pissfuck.css
+pissfuck.*
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,database,audio,node
 
