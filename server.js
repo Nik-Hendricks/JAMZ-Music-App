@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-var port = 80;
+var port = 8080;
 var Nedb = require('nedb');
 var uniqid = require('uniqid')
 var multer  =   require('multer');
@@ -39,68 +39,56 @@ app.post('/upload/audio',upload.array('songs', 50), (req, res, next) => {
     console.log(req.cookies.uid)
     var uid = req.cookies.uid;
     var files = req.files
+    var albumUid;
 
 
     if (!files) {
         const error = new Error('Please choose files')
         error.httpStatusCode = 400
         return next(error)
-    }
-        files.forEach(file => {
-
-
+    }else{
+      files.forEach(file => {
           mm.parseBuffer(file.buffer, 'audio/mpeg').then( metadata => {
-            console.log(metadata.common)
-            albumUid = null;
-            //check for picture in metadata
-            if(metadata.common.picture){
+              var songMetadata = {};
 
-              songImage = new Buffer(metadata.common.picture[0].data).toString('base64');
-            }else{
-              songImage = null;
-            }
 
-            //check for title in metadata
-            if(metadata.common.title){
-              songName = metadata.common.title;
-            }else{
-              songName = file.originalname;
-            }
 
-            //check for albumName in metadata
-            //console.log(metadata.common.album)
-            if(metadata.common.album){
-              console.log("THEER IS ALBUM")
-              albumName = metadata.common.album;
-              checkAlbumExists(albumName).then(result => {
-                console.log("albumResult " + result)
-                if(result == false){
-                  console.log("ALBUM DOES NOT EXIST")
-                  albumUid = uniqid();
-                  albums.insert({albumUid:albumUid, albumName:albumName, albumImage:songImage})
+              //result = condition ? value1 : value2;
+              //If condition is true then value1 will be assigned to result variable and if wrong then value2 will be assigned.
+
+              
+
+              songMetadata = {
+                albumImage: metadata.common.picture[0].data,
+                songName: metadata.common.title,
+                albumName: metadata.common.album,
+                albumImage: new Buffer(metadata.common.picture[0].data).toString('base64'),
+                songArtists: metadata.common.artists,
+
+              }
+
+              checkAlbumExists(songMetadata.albumName).then(result => {
+                if(result == false && songMetadata.albumName != undefined){
+                  songMetadata.albumUid = uniqid();
+                  albums.insert({albumUid:songMetadata.albumUid, albumName:songMetadata.albumName, albumImage:songMetadata.albumImage})
                 }else{
-                  console.log("ALBUM EXISTS HERES THE UID " + result)
-                  albumUid = result;
+                  songMetadata.albumUid = result;
                 }
+
+                var songUid = uniqid();
+                base64data = new Buffer(file.buffer).toString('base64');
+                songData.insert({songId:songUid, filename: file.originalname, base64: base64data}, function (err) {});
+                songIndex.insert({songName: songMetadata.songName, songId:songUid, songAlbum:songMetadata.albumUid},function(err){});
+                usersSongs.insert({userUid: uid, listenAmmount: null, favorite: false, songId:songUid},function(err){});
               })
-            }else{
-              //albumUid = null;
-            }
 
 
-            var songUid = uniqid();
-            //console.log('file.originalname= ' + file.originalname)
-            base64data = new Buffer(file.buffer).toString('base64');
-            songData.insert({songId:songUid, filename: file.originalname, base64: base64data}, function (err) {});
-            songIndex.insert({songName: songName, songId:songUid, songAlbum:albumUid},function(err){});
-            usersSongs.insert({userUid: uid, listenAmmount: null, favorite: false, songId:songUid},function(err){});
+
 
           });
-
-
-
-        });
-        res.redirect('/')
+      });
+      res.redirect('/')
+    }
 
 })
 
