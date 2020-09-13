@@ -263,36 +263,36 @@ body{
     overflow-y:scroll;
 }
 
-.songs-table{
+.song-table{
     width:100%;
     border-collapse: collapse;
 }
 
-.songs-table th{
+.song-table th{
     text-align: left;
     color:white;
     padding:10px;
 }
 
-.songs-table tr{
+.song-table tr{
     border-bottom:2px solid var(--grey-1);
 }
 
-.songs-table td{
+.song-table td{
     padding:10px;
     color:var(--blue-1);
 }
 
-.songs-table td i{
+.song-table td i{
     font-size:20px;
     color:var(--grey-3);
 }
 
-.songs-table td i:hover{
+.song-table td i:hover{
     color:grey;
 }
 
-.songs-table td a{
+.song-table td a{
     text-decoration: underline;
     cursor:pointer;
 }

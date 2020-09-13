@@ -81,7 +81,6 @@ function songsView(){
     $.get( "/view/songs.html", function( data ) {
         clearMainContentContainer()
         $("#main-content-container").append(data);
-        appendSongs();
     });
 }
 
@@ -123,23 +122,23 @@ function grabSongs(){
 function appendSongs(){
     var i = 0;
     var uid = getCookie('uid')
-        songsResults.forEach(song => {
-            
-            var table = document.getElementById('song-table')
-            var row = table.insertRow(-1);
-            row.className = 'song-item';
-            row.id = 'song-item-' + i;
-            var songCell = row.insertCell(0);
-            var artistCell = row.insertCell(1);
-            var dateAddedCell = row.insertCell(2);
-            var actionCell = row.insertCell(3)
-            songCell.innerHTML = `<a onclick="openSong('${song.songId}')">${song.songName}</a>`;
-            artistCell.innerHTML = song.artist
-            dateAddedCell.innerHTML = song.createdAt
-            actionCell.innerHTML = '<i class="fas fa-ellipsis-v"></i>'
-            i++
-        })
 
+    songsResults.forEach(song => {
+        
+        var table = document.getElementById('song-table')
+        var row = table.insertRow(-1);
+        row.className = 'song-item';
+        row.id = 'song-item-' + i;
+        var songCell = row.insertCell(0);
+        var artistCell = row.insertCell(1);
+        var dateAddedCell = row.insertCell(2);
+        var actionCell = row.insertCell(3)
+        songCell.innerHTML = `<a onclick="openSong('${song.songId}')">${song.songName}</a>`;
+        artistCell.innerHTML = song.artist
+        dateAddedCell.innerHTML = song.createdAt
+        actionCell.innerHTML = '<i class="fas fa-ellipsis-v"></i>'
+        i++
+    })
 }
 
 
