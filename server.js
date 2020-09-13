@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-var port = 8080;
+var port = 80;
 var Nedb = require('nedb');
 var uniqid = require('uniqid')
 var multer  =   require('multer');
@@ -22,6 +22,8 @@ playlistsSongs =  new Nedb({ filename: 'db/playlistsSongs.db', autoload: true , 
 artists =         new Nedb({ filename: 'db/artists.db', autoload: true, timestampdata: true}) //Stores albumIds, name, and if the artist has an account the user id
 albums =          new Nedb({ filename: 'db/albums.db', autoload: true, timestampdata: true}) //stores album image, or not, songDataIds, album description
 genre =           new Nedb({ filename: 'db/genres.db', autoload: true, timestampdata: true}) //stores name, genreId, and(maybe songId's of the top 10 listened songs of that genre updated every 24 hours)
+
+//addUser('Dev','password')
 
 app.use(cookieParser());
 
