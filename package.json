@@ -1,13 +1,13 @@
 {
-  "name": "jamz-music-player",
+  "name": "jamz-music",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web app built with node.js that allows you to upload and stream music",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Nik Hendricks",
-  "license": "ISC",
+  "contributors": [
+    "Gannon Burks"
+  ],
+  "license": "UNLICENSED",
   "dependencies": {
     "bluebird": "^3.7.2",
     "bluebird-co": "^2.2.0",
