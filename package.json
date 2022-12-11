@@ -12,7 +12,7 @@
     "bluebird": "^3.7.2",
     "bluebird-co": "^2.2.0",
     "cookie-parser": "^1.4.4",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "mp3-duration": "^1.1.0",
     "multer": "^1.4.2",
     "music-metadata": "^7.1.2",
